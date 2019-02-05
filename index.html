@@ -1,1 +1,57 @@
-index.my
+<!DOCTYPE html>
+<html lang='en'>
+	<head>
+		<meta charset='utf-8'>
+		<meta http-equiv='X-UA-Compatible'>
+		<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no'>
+		<title>Maya:&copy;RahulRR</title>
+		<meta name='description' content='Maya Apartment Complex - Rajarhat:&copy;RahulRR'>
+		<meta name='author' content='RahulRR'>
+		<meta name='apple-mobile-web-app-capable' content='yes'>
+		<meta name='mobile-web-app-capable' content='yes'>
+		<link rel='shortcut icon' href='favicon.png' type='image/png'>
+		<link rel='manifest' href='manifest.json'>		
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">	
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>			
+	</head>
+	<style>
+		* {font-family: 'Open Sans', sans-serif;font-size:13px;}
+		body{overflow-x: hidden;margin-top: 0px;font-family: 'Open Sans', sans-serif;font-size:13px;color:#666;padding:0 !important;}
+		input[type="number"]::-webkit-outer-spin-button,
+		input[type="number"]::-webkit-inner-spin-button {-webkit-appearance: none; margin: 0;}
+		input[type="number"]{-moz-appearance: textfield;}
+		select{-webkit-appearance: none;-moz-appearance: none;appearance: none;color:blue;}
+		select::-ms-expand {display:none;color:blue}
+		::-ms-clear{display: none;}
+		::-ms-reveal{display: none;}
+		@media screen and (max-width: 320px){#app_container{width: 100%;}}
+		@media screen and (min-width: 321px){#app_container{width: 320px;}}	
+	</style>
+	<body>
+		<input type="button" value="Test" onclick="test()">
+	</body>
+	<script>
+		var maya = null;
+		$(document).ready(function() {
+			$.ajax({type: "GET", url: "data.xml", dataType: "xml" ,
+				success: function(xml) {
+					maya = xml
+					console.log(maya);
+				}
+			});
+		});
+		function test(){
+			maya.getElementsByTagName("page1")[0].childNodes[0].nodeValue = "ABXYMN";
+			console.log(maya)	
+$.ajax({type: "PUT", url: "data.xml", contentType: "application/xml", dataType: "xml", processData: false,
+						data: '<maya><page1 id="pageA">rrr</page1></maya>',
+						success:function(msg) {
+							alert("hello:"+msg.toString());
+						},
+						error: function(msg){
+							alert("Error:"+msg.toString());
+						}
+					});	
+		}
+	</script>
+</html>
