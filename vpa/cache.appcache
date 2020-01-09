@@ -21,7 +21,7 @@ CACHE:
 ../res/mipmap-xhdpi/rahul.png
 ../res/mipmap-hdpi/rahul.png
 ../res/mipmap-mdpi/rahul.png
+../sw.js
 js/highstock.js
 js/map.js
-vpa.js
 manifest.json
