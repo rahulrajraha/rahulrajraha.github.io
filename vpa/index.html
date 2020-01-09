@@ -220,7 +220,7 @@ function movecrosshair(i){
 		if(i==0 && pinindex>0){
 			pinindex--;
 		}
-		if(i==1 && pinindex<bhavmaster.length) {
+		if(i==1 && pinindex<bhavmaster.length-1) {
 			pinindex++;
 		}
 		mychart.series[0].data[pinindex].setState('hover');
