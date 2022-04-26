@@ -18,7 +18,7 @@
             .tab button:hover {background-color: #ddd;}
             .tab button.active {background-color: #ccc;}
             .tabcontent {display: none; padding: 3px 3px; border: 1px solid #ccc; border-top: none;}
-			input[type=number]{width: 60px; font-family:verdana, sans-serif; font-size: 13px;}
+			input[type=number]{width: 80px; font-family:verdana, sans-serif; font-size: 13px;}
 			input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;}
 			input[type=number] {-moz-appearance: textfield;}
 			td {font-size: 10px;}
@@ -27,131 +27,233 @@
 	</head>
 	<body>
 		<div id='app'>
+		
 		    <div class="tab">
 			    <button class="tablinks" onclick="openTab(event, 'Cash')">Cash</button>
                 <button id='marginTab' class="tablinks" onclick="openTab(event, 'Margin')">Margin</button>
                 <button class="tablinks" onclick="openTab(event, 'SFuture')">StockFUT</button>
                 <button class="tablinks" onclick="openTab(event, 'CFuture')">CommodityFUT</button>
             </div>			
+			
 			<div id="Cash" class="tabcontent">
-               <table style="width:100%">
+               <table style="width:100%;text-align:left;">
 			    <tr>
-				  <td colspan=5><b>CASH BUY TRADE</b></td>
-				</tr>
-			    <tr>
-				  <td><input id="cbQ" type="number" placeholder="QT" onchange="calcMBCBSFB('cb', 'cs')"></td>
-				  <td><input id="cbBP" type="number" placeholder="BP" onchange="calcMBCBSFB('cb', 'cs')"></td>
-				  <td><input id="cbBE" type="number" placeholder="BE" disabled></td>
-				  <td><input id="cbSP" type="number" placeholder="SP" onchange="calcMBCBSFB('cb', 'cs')"></td>
-				  <td><input id="cbPL" type="number" placeholder="PL" disabled></td>
+				  <td colspan=4><b>CASH BUY TRADE</b></td>
 				</tr>
 				<tr>
-				  <td colspan=5><input id="cbINV" type="number" placeholder="INV" disabled></td>
+				  <td>Quantity</td>
+				  <td>Buy Price</td>
+				  <td>Break Even</td>
+				  <td>Sell Price</td>
+				</tr>
+			    <tr>
+				  <td><input id="cbQ" type="number" onchange="calcMBCBSFB('cb', 'cs')"></td>
+				  <td><input id="cbBP" type="number" onchange="calcMBCBSFB('cb', 'cs')"></td>
+				  <td><input id="cbBE" type="number" disabled></td>
+				  <td><input id="cbSP" type="number" onchange="calcMBCBSFB('cb', 'cs')"></td>
+				</tr>
+				<tr>
+				  <td>Investment</td>
+				  <td>P/L</td>
+				  <td>Turnover</td>
+				  <td>ROR</td>
+				</tr>
+				<tr>
+				  <td><input id="cbINV" type="number" disabled></td>
+				  <td><input id="cbPL" type="number" disabled></td>
+				  <td><input id="cbTRN" type="number" disabled></td>
+				  <td><input id="cbROR" type="number" disabled></td>
 				</tr>
 			   </table>
             </div>
 			
             <div id="Margin" class="tabcontent">
-               <table style="width:100%">
+               <table style="width:100%;text-align:left;">
 			    <tr>
-				  <td colspan=5><b>MARGIN BUY TRADE</b></td>
-				</tr>
-			    <tr>
-				  <td><input id="mbQ" type="number" placeholder="QT" onchange="calcMBCBSFB('mb', 'ms')"></td>
-				  <td><input id="mbBP" type="number" placeholder="BP" onchange="calcMBCBSFB('mb', 'ms')"></td>
-				  <td><input id="mbBE" type="number" placeholder="BE" disabled></td>
-				  <td><input id="mbSP" type="number" placeholder="SP" onchange="calcMBCBSFB('mb', 'ms')"></td>
-				  <td><input id="mbPL" type="number" placeholder="PL" disabled></td>
+				  <td colspan=4><b>MARGIN BUY TRADE</b></td>
 				</tr>
 				<tr>
-				  <td colspan=5><input id="mbINV" type="number" placeholder="INV" disabled></td>
+				  <td>Quantity</td>
+				  <td>Buy Price</td>
+				  <td>Break Even</td>
+				  <td>Sell Price</td>
+				</tr>
+			    <tr>
+				  <td><input id="mbQ" type="number" onchange="calcMBCBSFB('mb', 'ms')"></td>
+				  <td><input id="mbBP" type="number" onchange="calcMBCBSFB('mb', 'ms')"></td>
+				  <td><input id="mbBE" type="number" disabled></td>
+				  <td><input id="mbSP" type="number" onchange="calcMBCBSFB('mb', 'ms')"></td>
+				</tr>
+				<tr>
+				  <td>Investment</td>
+				  <td>P/L</td>
+				  <td>Turnover</td>
+				  <td>ROR</td>
+				</tr>
+				<tr>
+				  <td><input id="mbINV" type="number" disabled></td>
+				  <td><input id="mbPL" type="number" disabled></td>
+				  <td><input id="mbTRN" type="number" disabled></td>
+				  <td><input id="mbROR" type="number" disabled></td>
 				</tr>
 			   </table>
 			   <hr>
-			   <table style="width:100%">
+			   <table style="width:100%;text-align:left;">
 			    <tr>
-				  <td colspan=5><b>MARGIN SELL TRADE</b></td>
-				</tr>
-			    <tr>
-				  <td><input id="msQ" type="number" placeholder="QT" onchange="calcMSSFS('ms', 'mb')"></td>
-				  <td><input id="msSP" type="number" placeholder="SP" onchange="calcMSSFS('ms', 'mb')"></td>
-				  <td><input id="msBE" type="number" placeholder="BE" disabled></td>
-				  <td><input id="msBP" type="number" placeholder="BP" onchange="calcMSSFS('ms', 'mb')"></td>
-				  <td><input id="msPL" type="number" placeholder="PL" disabled></td>
+				  <td colspan=4><b>MARGIN SELL TRADE</b></td>
 				</tr>
 				<tr>
-				  <td colspan=5><input id="msINV" type="number" placeholder="INV" disabled></td>
+				  <td>Quantity</td>
+				  <td>Sell Price</td>
+				  <td>Break Even</td>
+				  <td>Buy Price</td>
+				</tr>
+			    <tr>
+				  <td><input id="msQ" type="number" onchange="calcMSSFS('ms', 'mb')"></td>
+				  <td><input id="msSP" type="number" onchange="calcMSSFS('ms', 'mb')"></td>
+				  <td><input id="msBE" type="number" disabled></td>
+				  <td><input id="msBP" type="number" onchange="calcMSSFS('ms', 'mb')"></td>
+				</tr>
+				<tr>
+				  <td>Investment</td>
+				  <td>P/L</td>
+				  <td>Turnover</td>
+				  <td>ROR</td>
+				</tr>
+				<tr>
+				  <td><input id="msINV" type="number" disabled></td>
+				  <td><input id="msPL" type="number" disabled></td>
+				  <td><input id="msTRN" type="number" disabled></td>
+				  <td><input id="msROR" type="number" disabled></td>
 				</tr>
 			   </table>
             </div>
             
 			<div id="SFuture" class="tabcontent">
-                <table style="width:100%">
+                <table style="width:100%;text-align:left;">
 			    <tr>
-				  <td colspan=5><b>STOCK FUTURES BUY TRADE</b></td>
-				</tr>
-			    <tr>
-				  <td><input id="sfbQ" type="number" placeholder="QT" onchange="calcMBCBSFB('sfb', 'sfs')"></td>
-				  <td><input id="sfbBP" type="number" placeholder="BP" onchange="calcMBCBSFB('sfb', 'sfs')"></td>
-				  <td><input id="sfbBE" type="number" placeholder="BE" disabled></td>
-				  <td><input id="sfbSP" type="number" placeholder="SP" onchange="calcMBCBSFB('sfb', 'sfs')"></td>
-				  <td><input id="sfbPL" type="number" placeholder="PL" disabled></td>
+				  <td colspan=4><b>STOCK FUTURES BUY TRADE</b></td>
 				</tr>
 				<tr>
-				  <td colspan=5><input id="sfbINV" type="number" placeholder="INV" disabled></td>
+				  <td>Quantity</td>
+				  <td>Buy Price</td>
+				  <td>Break Even</td>
+				  <td>Sell Price</td>
+				</tr>
+			    <tr>
+				  <td><input id="sfbQ" type="number" onchange="calcMBCBSFB('sfb', 'sfs')"></td>
+				  <td><input id="sfbBP" type="number" onchange="calcMBCBSFB('sfb', 'sfs')"></td>
+				  <td><input id="sfbBE" type="number" disabled></td>
+				  <td><input id="sfbSP" type="number" onchange="calcMBCBSFB('sfb', 'sfs')"></td>
+				</tr>
+				<tr>
+				  <td>Investment</td>
+				  <td>P/L</td>
+				  <td>Turnover</td>
+				  <td>ROR</td>
+				</tr>
+				<tr>
+				  <td><input id="sfbINV" type="number" disabled></td>
+				  <td><input id="sfbPL" type="number" disabled></td>
+				  <td><input id="sfbTRN" type="number" disabled></td>
+				  <td><input id="sfbROR" type="number" disabled></td>
 				</tr>
 			   </table>
 			   <hr>
-			   <table style="width:100%">
+			   <table style="width:100%;text-align:left;">
 			    <tr>
-				  <td colspan=5><b>STOCK FUTURES SELL TRADE</b></td>
-				</tr>
-			    <tr>
-				  <td><input id="sfsQ" type="number" placeholder="QT" onchange="calcMSSFS('sfs', 'sfb')"></td>
-				  <td><input id="sfsSP" type="number" placeholder="SP" onchange="calcMSSFS('sfs', 'sfb')"></td>
-				  <td><input id="sfsBE" type="number" placeholder="BE" disabled></td>
-				  <td><input id="sfsBP" type="number" placeholder="BP" onchange="calcMSSFS('sfs', 'sfb')"></td>
-				  <td><input id="sfsPL" type="number" placeholder="PL" disabled></td>
+				  <td colspan=4><b>STOCK FUTURES SELL TRADE</b></td>
 				</tr>
 				<tr>
-				  <td colspan=5><input id="sfsINV" type="number" placeholder="INV" disabled></td>
+				  <td>Quantity</td>
+				  <td>Sell Price</td>
+				  <td>Break Even</td>
+				  <td>Buy Price</td>
+				</tr>
+			    <tr>
+				  <td><input id="sfsQ" type="number" onchange="calcMSSFS('sfs', 'sfb')"></td>
+				  <td><input id="sfsSP" type="number" onchange="calcMSSFS('sfs', 'sfb')"></td>
+				  <td><input id="sfsBE" type="number" disabled></td>
+				  <td><input id="sfsBP" type="number" onchange="calcMSSFS('sfs', 'sfb')"></td>
+				</tr>
+				<tr>
+				  <td>Investment</td>
+				  <td>P/L</td>
+				  <td>Turnover</td>
+				  <td>ROR</td>
+				</tr>
+				<tr>
+				  <td><input id="sfsINV" type="number" disabled></td>
+				  <td><input id="sfsPL" type="number" disabled></td>
+				  <td><input id="sfsTRN" type="number" disabled></td>
+				  <td><input id="sfsROR" type="number" disabled></td>
 				</tr>
 			   </table>
             </div>
             
 			<div id="CFuture" class="tabcontent">
-               <table style="width:100%">
+               <table style="width:100%;text-align:left;">
 			    <tr>
-				  <td colspan=5><b>COMMODITY FUTURES BUY TRADE</b></td>
-				</tr>
-			    <tr>
-				  <td><input id="cfbQ" type="number" placeholder="QT" onchange="calcCFB('cfb', 'cfs')"></td>
-				  <td><input id="cfbBP" type="number" placeholder="BP" onchange="calcCFB('cfb', 'cfs')"></td>
-				  <td><input id="cfbBE" type="number" placeholder="BE" disabled></td>
-				  <td><input id="cfbSP" type="number" placeholder="SP" onchange="calcCFB('cfb', 'cfs')"></td>
-				  <td><input id="cfbPL" type="number" placeholder="PL" disabled></td>
+				  <td colspan=4><b>COMMODITY FUTURES BUY TRADE</b></td>
 				</tr>
 				<tr>
-				  <td colspan=5><input id="cfbINV" type="number" placeholder="INV" disabled></td>
+				  <td>Quantity</td>
+				  <td>Buy Price</td>
+				  <td>Break Even</td>
+				  <td>Sell Price</td>
+				</tr>
+			    <tr>
+				  <td><input id="cfbQ" type="number" onchange="calcCFB('cfb', 'cfs')"></td>
+				  <td><input id="cfbBP" type="number" onchange="calcCFB('cfb', 'cfs')"></td>
+				  <td><input id="cfbBE" type="number" disabled></td>
+				  <td><input id="cfbSP" type="number" onchange="calcCFB('cfb', 'cfs')"></td>
+				</tr>
+				<tr>
+				  <td>Investment</td>
+				  <td>P/L</td>
+				  <td>Turnover</td>
+				  <td>ROR</td>
+				</tr>
+				<tr>
+				  <td><input id="cfbINV" type="number" disabled></td>
+				  <td><input id="cfbPL" type="number" disabled></td>
+				  <td><input id="cfbTRN" type="number" disabled></td>
+				  <td><input id="cfbROR" type="number" disabled></td>
 				</tr>
 			   </table>
 			   <hr>
-			   <table style="width:100%">
+			   <table style="width:100%;text-align:left;">
 			    <tr>
-				  <td colspan=5><b>COMMODITY FUTURES SELL TRADE</b></td>
-				</tr>
-			    <tr>
-				  <td><input id="cfsQ" type="number" placeholder="QT" onchange="calcCFS('cfs', 'cfb')"></td>
-				  <td><input id="cfsSP" type="number" placeholder="SP" onchange="calcCFS('cfs', 'cfb')"></td>
-				  <td><input id="cfsBE" type="number" placeholder="BE" disabled></td>
-				  <td><input id="cfsBP" type="number" placeholder="BP" onchange="calcCFS('cfs', 'cfb')"></td>
-				  <td><input id="cfsPL" type="number" placeholder="PL" disabled></td>
+				  <td colspan=4><b>COMMODITY FUTURES SELL TRADE</b></td>
 				</tr>
 				<tr>
-				  <td colspan=5><input id="cfsINV" type="number" placeholder="INV" disabled></td>
+				  <td>Quantity</td>
+				  <td>Sell Price</td>
+				  <td>Break Even</td>
+				  <td>Buy Price</td>
+				</tr>
+			    <tr>
+				  <td><input id="cfsQ" type="number" onchange="calcCFS('cfs', 'cfb')"></td>
+				  <td><input id="cfsSP" type="number" onchange="calcCFS('cfs', 'cfb')"></td>
+				  <td><input id="cfsBE" type="number" disabled></td>
+				  <td><input id="cfsBP" type="number" onchange="calcCFS('cfs', 'cfb')"></td>
+				</tr>
+				<tr>
+				  <td>Investment</td>
+				  <td>P/L</td>
+				  <td>Turnover</td>
+				  <td>ROR</td>
+				</tr>
+				<tr>
+				  <td><input id="cfsINV" type="number" disabled></td>
+				  <td><input id="cfsPL" type="number" disabled></td>
+				  <td><input id="cfsTRN" type="number" disabled></td>
+				  <td><input id="cfsROR" type="number" disabled></td>
 				</tr>
 			   </table>
             </div>
+			
+			<hr>
 			
 			<table style="width:100%; text-align:left;">
 			    <tr style="text-align:center;">
@@ -201,6 +303,7 @@
 				   <td style="width:25%" id="sdemat">0.00</td>
 			    </tr>
 			</table>
+		
 		</div>
 	</body>
 </html>
@@ -296,11 +399,22 @@ function calcMBCBSFB(x, y){
    document.getElementById("sdemat").innerText = dematB.toFixed(2) + '|' + dematgstB.toFixed(2);
    
    document.getElementById(x+"PL").value = (parseFloat(cptotalB.toFixed(2)) - parseFloat(cptotalA.toFixed(2))).toFixed(2);   
+   
+   if(x=='cb'){
+      document.getElementById(x+"TRN").value = cpB.toFixed(2);
+	  document.getElementById(x+"ROR").value = (document.getElementById(x+"PL").value*100/document.getElementById(x+"TRN").value).toFixed(2);
+   }
+   
+   if(x=='mb' || x=='sfb'){
+      document.getElementById(x+"TRN").value = (document.getElementById(x+"Q").value*(Math.abs(document.getElementById(x+"SP").value - document.getElementById(x+"BP").value))).toFixed(2);
+	  document.getElementById(x+"ROR").value = (document.getElementById(x+"PL").value*100/document.getElementById(x+"TRN").value).toFixed(2);
+   } 
+   
 }
 
 function calcMSSFS(x, y){
    var cpA = document.getElementById(x+"Q").value*document.getElementById(x+"SP").value;
-   var brkA = charges[x].brk;
+   var brkA = cpA*charges[x].brk/100;
    var brkgstA = brkA*charges[x].gst/100;
    var sttA = cpA*charges[x].stt/100;
    //var sttgstA = sttA*charges[x].gst/100;
@@ -313,6 +427,7 @@ function calcMSSFS(x, y){
    var dematA = charges[x].demat;
    var dematgstA = dematA*charges[x].gst/100;
    var cptotalA = cpA - brkA - brkgstA - sttA - sttgstA - txnA - txngstA - sebiA - stampA - dematA - dematgstA;
+   
    var dematB = charges[y].demat;
    var dematgstB = dematB*charges[y].gst/100;
    var betotal = ((cptotalA - dematB - dematgstB)*100)/(100 + charges[y].brk + charges[y].stt + charges[y].txn + charges[y].gst*(charges[y].brk + charges[y].txn)/100 + charges[y].sebi + charges[y].stamp);
@@ -349,7 +464,9 @@ function calcMSSFS(x, y){
    document.getElementById("bstamp").innerText = stampB.toFixed(2);
    document.getElementById("bdemat").innerText = dematB.toFixed(2) + '|' + dematgstB.toFixed(2);
    
-   document.getElementById(x+"PL").value = (parseFloat(cptotalA.toFixed(2)) - parseFloat(cptotalB.toFixed(2))).toFixed(2);   
+   document.getElementById(x+"PL").value = (parseFloat(cptotalA.toFixed(2)) - parseFloat(cptotalB.toFixed(2))).toFixed(2);  
+   document.getElementById(x+"TRN").value = (document.getElementById(x+"Q").value*(Math.abs(document.getElementById(x+"SP").value - document.getElementById(x+"BP").value))).toFixed(2);
+   document.getElementById(x+"ROR").value = (document.getElementById(x+"PL").value*100/document.getElementById(x+"TRN").value).toFixed(2);   
 }
 
 function calcCFB(x, y){
@@ -404,6 +521,8 @@ function calcCFB(x, y){
    document.getElementById("sdemat").innerText = dematB.toFixed(2) + '|' + dematgstB.toFixed(2);
    
    document.getElementById(x+"PL").value = (parseFloat(cptotalB.toFixed(2)) - parseFloat(cptotalA.toFixed(2))).toFixed(2); 
+   document.getElementById(x+"TRN").value = (document.getElementById(x+"Q").value*(Math.abs(document.getElementById(x+"SP").value - document.getElementById(x+"BP").value))).toFixed(2);
+   document.getElementById(x+"ROR").value = (document.getElementById(x+"PL").value*100/document.getElementById(x+"TRN").value).toFixed(2);
 }
 
 function calcCFS(x, y){
@@ -458,6 +577,8 @@ function calcCFS(x, y){
    document.getElementById("bdemat").innerText = dematB.toFixed(2) + '|' + dematgstB.toFixed(2);
    
    document.getElementById(x+"PL").value = (parseFloat(cptotalA.toFixed(2)) - parseFloat(cptotalB.toFixed(2))).toFixed(2); 
+   document.getElementById(x+"TRN").value = (document.getElementById(x+"Q").value*(Math.abs(document.getElementById(x+"SP").value - document.getElementById(x+"BP").value))).toFixed(2);
+   document.getElementById(x+"ROR").value = (document.getElementById(x+"PL").value*100/document.getElementById(x+"TRN").value).toFixed(2);
 }
 
 document.getElementById('marginTab').click();
