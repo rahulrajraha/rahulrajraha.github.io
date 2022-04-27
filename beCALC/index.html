@@ -9,19 +9,23 @@
 		<meta name='author' content='RRR'>		
 		<meta name='apple-mobile-web-app-capable' content='yes'>
 		<meta name='mobile-web-app-capable' content='yes'>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
 		<style>
-		    body {font-family:Tahoma, sans-serif;}
+		    body {font-family:'Open Sans', sans-serif;}
 		    @media screen and (max-width: 430px) {#app {width: 100%;  text-align:center;margin: 0 auto;}}
 			@media screen and (min-width: 431px) {#app {width: 430px; text-align:center;margin: 0 auto;}}
-            .tab {overflow: hidden; border: 1px solid #ccc; background-color: #f1f1f1;}
-            .tab button {background-color: inherit; float: left; border: none; outline: none; padding: 8px 10px; font-family:verdana, sans-serif;}
-            .tab button:hover {background-color: #ddd;}
-            .tab button.active {background-color: #ccc;}
-            .tabcontent {display: none; padding: 3px 3px; border: 1px solid #ccc; border-top: none;}
-			input[type=number]{width: 80px; font-family:verdana, sans-serif; font-size: 13px;}
+            .tab {overflow: hidden; border: 1px solid #540b0e; background-color: #f77f00;}
+            .tab button {background-color: inherit; float: left; border: none; outline: none; padding: 8px 10px; font-family:'Open Sans', sans-serif;}
+            .tab button:hover {background-color: #ffb703;}
+            .tab button.active {background-color: #540b0e; color: #ffffff;}
+            .tabcontent {display: none; padding: 3px 3px; border: 1px solid #540b0e; border-top: none;}
+			input[type=number]{width: 80px; font-family:'Open Sans', sans-serif; font-size: 13px; background-color:#d9ed92; font-weight: bold;}
 			input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;}
 			input[type=number] {-moz-appearance: textfield;}
-			td {font-size: 10px;}
+			input[type=number]:disabled {background-color:#f9c74f; }
+			td {font-size: 11px; font-weight: bold;}
 			table, th, td {border: 1px solid black; border-collapse: collapse;}
 		</style>
 	</head>
@@ -38,7 +42,7 @@
 			<div id="Cash" class="tabcontent">
                <table style="width:100%;text-align:left;">
 			    <tr>
-				  <td colspan=4><b>CASH BUY TRADE</b></td>
+				  <td colspan=4 style="background-color:#dee2e6;"><b>CASH BUY TRADE</b></td>
 				</tr>
 				<tr>
 				  <td>Quantity</td>
@@ -70,7 +74,7 @@
             <div id="Margin" class="tabcontent">
                <table style="width:100%;text-align:left;">
 			    <tr>
-				  <td colspan=4><b>MARGIN BUY TRADE</b></td>
+				  <td colspan=4 style="background-color:#dee2e6;"><b>MARGIN BUY TRADE</b></td>
 				</tr>
 				<tr>
 				  <td>Quantity</td>
@@ -100,7 +104,7 @@
 			   <hr>
 			   <table style="width:100%;text-align:left;">
 			    <tr>
-				  <td colspan=4><b>MARGIN SELL TRADE</b></td>
+				  <td colspan=4 style="background-color:#dee2e6;"><b>MARGIN SELL TRADE</b></td>
 				</tr>
 				<tr>
 				  <td>Quantity</td>
@@ -132,7 +136,7 @@
 			<div id="SFuture" class="tabcontent">
                 <table style="width:100%;text-align:left;">
 			    <tr>
-				  <td colspan=4><b>STOCK FUTURES BUY TRADE</b></td>
+				  <td colspan=4 style="background-color:#dee2e6;"><b>STOCK FUTURES BUY TRADE</b></td>
 				</tr>
 				<tr>
 				  <td>Quantity</td>
@@ -162,7 +166,7 @@
 			   <hr>
 			   <table style="width:100%;text-align:left;">
 			    <tr>
-				  <td colspan=4><b>STOCK FUTURES SELL TRADE</b></td>
+				  <td colspan=4 style="background-color:#dee2e6;"><b>STOCK FUTURES SELL TRADE</b></td>
 				</tr>
 				<tr>
 				  <td>Quantity</td>
@@ -194,7 +198,7 @@
 			<div id="CFuture" class="tabcontent">
                <table style="width:100%;text-align:left;">
 			    <tr>
-				  <td colspan=4><b>COMMODITY FUTURES BUY TRADE</b></td>
+				  <td colspan=4 style="background-color:#dee2e6;"><b>COMMODITY FUTURES BUY TRADE</b></td>
 				</tr>
 				<tr>
 				  <td>Quantity</td>
@@ -224,7 +228,7 @@
 			   <hr>
 			   <table style="width:100%;text-align:left;">
 			    <tr>
-				  <td colspan=4><b>COMMODITY FUTURES SELL TRADE</b></td>
+				  <td colspan=4 style="background-color:#dee2e6;"><b>COMMODITY FUTURES SELL TRADE</b></td>
 				</tr>
 				<tr>
 				  <td>Quantity</td>
@@ -257,8 +261,8 @@
 			
 			<table style="width:100%; text-align:left;">
 			    <tr style="text-align:center;">
-			       <td colspan="2">BUY</td>
-				   <td colspan="2">SELL</td>
+			       <td colspan="2" style="background-color:#dee2e6;">BUY</td>
+				   <td colspan="2" style="background-color:#dee2e6;">SELL</td>
 			    </tr>
 				<tr>
 			       <td style="width:25%">BRKG</td>
