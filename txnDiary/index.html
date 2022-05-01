@@ -96,6 +96,13 @@
       background-color: #d9ed92;
     }
 
+    input[type=text]{
+      width: 180px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 13px;
+      background-color: #d9ed92;
+    }
+
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
       -webkit-appearance: none;
@@ -180,9 +187,20 @@
           <td style="width:22%;">Closed?  <input type="checkbox" id="txnStatus_0"></td>
           <td style="width:23%;"><input type="button" value="SAVE" onclick="updateTxn(0);"></td>
         </tr>
+        <tr>
+          <td style="width:12%;">Note</td>
+          <td colspan=3 style="width:88%;"><input id="txnNote_0" type="text"></td>
+        </tr>
       </table>
       <hr>
       <table style="width:100%;text-align:left;" id='txnTable'>
+        <tr style="text-align:center;">
+          <td style="width:45%; background-color:#dee2e6;">
+            <select id="txnFFY" onchange="filterData()"><option>2021</option><option>2022</option><option>2023</option><option>2024</option><option>2025</option><option>2026</option></select>
+            <select id="txnFMonth" onchange="filterData()"><option value="1">April</option><option value="2">May</option><option value="3">June</option><option value="4">July</option><option value="5">August</option><option value="6">September</option><option value="7">October</option><option value="8">November</option><option value="9">December</option><option value="10">January</option><option value="11">February</option><option value="12">March</option><option value="0">ALL</option></select>
+            <select id="txnFStatus" onchange="filterData()"><option value="O">Open</option><option value="C">Closed</option><option value="0">ALL</option></select>
+          </td>
+        </tr>
         <tr style="text-align:center;">
           <td style="width:100%; background-color:#dee2e6;">
             <input type="button" value="PREV" onclick="modDate(-1);">&nbsp;
@@ -317,7 +335,11 @@
   function iniDiary(){
     if( !document.getElementById('txnDate').valueAsDate ) {
       document.getElementById('txnDate').valueAsDate = new Date();
-      getTXN();
+      document.getElementById('txnFFY').value = 2022;
+      var month = (new Date()).getMonth() < 3 ? (new Date()).getMonth() + 10 : (new Date()).getMonth() - 2;
+      document.getElementById('txnFMonth').value = month;
+      //getTXN();
+      filterData();
     }
   }
 
@@ -429,10 +451,11 @@
     var sp = document.getElementById('txnSP_' + i).value;
     var pl = document.getElementById('txnPL_' + i).value;
     var plp = document.getElementById('txnPLP_' + i).value;
-    var stat = document.getElementById('txnStatus_' + i).checked ? 1 : 0;
+    var status = document.getElementById('txnStatus_' + i).checked ? 1 : 0;
     var bd = null
     var sd = null;
     var ltd = null;
+    var note = document.getElementById('txnNote_' + i).value;
 
     if( document.getElementById('txnBD_' + i).valueAsDate > new Date() || document.getElementById('txnSD_' + i).valueAsDate > new Date()) {
       alert('Future dated transactions not allowed.');
@@ -461,16 +484,34 @@
       if( document.getElementById('txnBD_' + i).valueAsDate > document.getElementById('txnSD_' + i).valueAsDate)  ltd = bd;
     }
 
-    var fy = (new Date(ltd)).getFullYear()*100 + (new Date(ltd)).getMonth();
+    var ltdmonth = (new Date(ltd)).getMonth() + 1;
+    var ltdyear = (new Date(ltd)).getFullYear();
 
-    var record = {fy:fy, status:stat, lasttxndate:ltd, type:type, qty:q, bp:bp, bdate:bd, sp:sp, sdate:sd, pl:pl, plp:plp};
+    var fy = ltdmonth < 4 ? ltdyear - 1 : ltdyear; 
+    var fymonth = ltdmonth < 4 ? fy + '-' + (9 + ltdmonth) : fy + '-' + (ltdmonth - 3);
+
+    var fystatus = status == 0 ? fy + '-O' : fy + '-C';
+    var fymstatus = status == 0 ? fymonth + '-O' :  fymonth + '-C';
+    var status = document.getElementById('txnStatus_' + i).checked ? 1 : 0;
+
+    var record = {fy:fy, fymonth:fymonth, fystatus:fystatus, fymstatus:fymstatus, lasttxndate:ltd, type:type, qty:q, bp:bp, bdate:bd, sp:sp, sdate:sd, pl:pl, plp:plp, note:note, status:status};
 
     if(i==0) {
       toggleOverlay('block');
       var txnRef = firebase.database().ref('txn');
       txnRef.push(record)
       .then(function(ref) {
-        alert('Record added!\nID: ' + ref.key);
+        //alert('Record added!\nID: ' + ref.key);
+        document.getElementById('txnType_' + i).selectedIndex = 0;
+        document.getElementById('txnQ_' + i).value = 0;
+        document.getElementById('txnBP_' + i).value = 0;
+        document.getElementById('txnSP_' + i).value = 0;
+        document.getElementById('txnPL_' + i).value = 0;
+        document.getElementById('txnPLP_' + i).value = 0;
+        document.getElementById('txnStatus_' + i).checked = false;
+        document.getElementById('txnBD_' + i).value = '';
+        document.getElementById('txnSD_' + i).value = '';
+        document.getElementById('txnNote_' + i).value = '';
         toggleOverlay('none');
       })
       .catch(function(error) {
@@ -482,7 +523,7 @@
       toggleOverlay('block');
       txnRef.set(record)
       .then(function() {
-        alert('Record updated!\nID: ' + i);
+        //alert('Record updated!\nID: ' + i);
         toggleOverlay('none');
       })
       .catch(function(error) {
@@ -498,7 +539,7 @@
     txnRef.remove()
     .then(function() {
       document.getElementById("txnBox_" + i).remove();
-      alert('Record deleted!\nID: ' + i);
+      //alert('Record deleted!\nID: ' + i);
       toggleOverlay('none');
     })
     .catch(function(error) {
@@ -513,11 +554,48 @@
     getTXN()
   }
 
+  function appendRowHTML(table, key, record){
+    var row = table.insertRow();
+    var cell = row.insertCell(0);  
+    var html = '<div  id="txnBox_' + key + '">';
+    html+= '<table style="width:100%;text-align:left;"><tr><td style="width:12%;">TXN</td>';
+    html+= '<td style="width:43%;">';
+    html+= '<select id="txnType_' + key + '" onchange="calcPL(\'' + key + '\')"><option>C</option><option>M</option><option>SF</option><option>CF</option><option>MF</option></select></td>';
+    html+= '<td style="width:22%;">Quantity</td>';
+    html+= '<td style="width:23%;"><input id="txnQ_' + key + '" type="number" onchange="calcPL(\'' + key + '\')"></td>';
+    html+= '</tr><tr><td style="width:12%;">Buy DT</td>';
+    html+= '<td style="width:43%;"><input id="txnBD_' + key + '" type="date"></td>';
+    html+= '<td style="width:22%;">Buy Price</td>';
+    html+= '<td style="width:23%;"><input id="txnBP_' + key + '" type="number" onchange="calcPL(\'' + key + '\')"></td>';
+    html+= '</tr><tr><td style="width:12%;">Sell DT</td>';
+    html+= '<td style="width:43%;"><input id="txnSD_' + key + '" type="date"></td>';
+    html+= '<td style="width:22%;">Sell Price</td>';
+    html+= '<td style="width:23%;"><input id="txnSP_' + key + '" type="number" onchange="calcPL(\'' + key + '\')"></td>';
+    html+= '</tr><tr><td style="width:12%;">P/L (%)</td>';
+    html+= '<td style="width:43%;"><input id="txnPL_' + key + '" type="number" disabled>&nbsp;<input id="txnPLP_' + key + '" type="number" disabled></td>';
+    html+= '<td style="width:22%;">Closed?  <input type="checkbox" id="txnStatus_' + key + '"></td>';
+    html+= '<td style="width:23%;"><input type="button" value="++" onclick="updateTxn(\'' + key + '\');">&ensp;&nbsp;<input type="button" value="---" onclick="removeTxn(\'' + key + '\');"></td>';
+    html+= '</tr><tr><td style="width:12%;">Note</td>';
+    html+= '<td colspan=3 style="width:88%;"><input id="txnNote_' + key + '" type="text"></td>';
+    html+= '</tr></table></div><hr>';
+    cell.innerHTML = html;  
+    document.getElementById('txnType_'+key).value = record.type;
+    document.getElementById('txnQ_'+key).value = record.qty;
+    document.getElementById('txnBD_'+key).value = record.bdate;
+    document.getElementById('txnBP_'+key).value = record.bp;
+    document.getElementById('txnSD_'+key).value = record.sdate;
+    document.getElementById('txnSP_'+key).value = record.sp;
+    document.getElementById('txnPL_'+key).value = record.pl;
+    document.getElementById('txnPLP_'+key).value = record.plp;
+    document.getElementById('txnStatus_'+key).checked = record.status == 0 ? false : true;
+    document.getElementById('txnNote_'+key).value = record.note;
+  }
+
   function getTXN() {
     var date = document.getElementById('txnDate').valueAsDate.toISOString().substring(0, 10);
     var txn = db.ref("txn");
     var table = document.getElementById('txnTable');
-    for(var i = 1; i < table.rows.length;){
+    for(var i = 2; i < table.rows.length;){
       table.deleteRow(i);
     }
     toggleOverlay('block');
@@ -526,36 +604,7 @@
         snapshot.forEach((childSnapshot) => {
           var key = childSnapshot.key;
           var record = childSnapshot.val();
-          var cell = table.insertRow().insertCell(0);
-          var html = '<div  id="txnBox_' + key + '">';
-          html+= '<table style="width:100%;text-align:left;"><tr><td style="width:12%;">TXN</td>';
-          html+= '<td style="width:43%;">';
-          html+= '<select id="txnType_' + key + '" onchange="calcPL(\'' + key + '\')"><option>C</option><option>M</option><option>SF</option><option>CF</option><option>MF</option></select></td>';
-          html+= '<td style="width:22%;">Quantity</td>';
-          html+= '<td style="width:23%;"><input id="txnQ_' + key + '" type="number" onchange="calcPL(\'' + key + '\')"></td>';
-          html+= '</tr><tr><td style="width:12%;">Buy DT</td>';
-          html+= '<td style="width:43%;"><input id="txnBD_' + key + '" type="date"></td>';
-          html+= '<td style="width:22%;">Buy Price</td>';
-          html+= '<td style="width:23%;"><input id="txnBP_' + key + '" type="number" onchange="calcPL(\'' + key + '\')"></td>';
-          html+= '</tr><tr><td style="width:12%;">Sell DT</td>';
-          html+= '<td style="width:43%;"><input id="txnSD_' + key + '" type="date"></td>';
-          html+= '<td style="width:22%;">Sell Price</td>';
-          html+= '<td style="width:23%;"><input id="txnSP_' + key + '" type="number" onchange="calcPL(\'' + key + '\')"></td>';
-          html+= '</tr><tr><td style="width:12%;">P/L (%)</td>';
-          html+= '<td style="width:43%;"><input id="txnPL_' + key + '" type="number" disabled>&nbsp;<input id="txnPLP_' + key + '" type="number" disabled></td>';
-          html+= '<td style="width:22%;">Closed?  <input type="checkbox" id="txnStatus_' + key + '"></td>';
-          html+= '<td style="width:23%;"><input type="button" value="++" onclick="updateTxn(\'' + key + '\');">&ensp;&nbsp;<input type="button" value="---" onclick="removeTxn(\'' + key + '\');"></td>';
-          html+= '</tr></table></div><hr>';
-          cell.innerHTML = html;
-          document.getElementById('txnType_'+key).value = record.type;
-          document.getElementById('txnQ_'+key).value = record.qty;
-          document.getElementById('txnBD_'+key).value = record.bdate;
-          document.getElementById('txnBP_'+key).value = record.bp;
-          document.getElementById('txnSD_'+key).value = record.sdate;
-          document.getElementById('txnSP_'+key).value = record.sp;
-          document.getElementById('txnPL_'+key).value = record.pl;
-          document.getElementById('txnPLP_'+key).value = record.plp;
-          document.getElementById('txnStatus_'+key).checked = record.status == 0 ? false : true;
+          appendRowHTML(table, key, record);
         });
         toggleOverlay('none');
       } else {
@@ -569,6 +618,58 @@
       console.log(error);
       toggleOverlay('none');
     });
+  }
+
+  function filterData() {
+    var txn = db.ref("txn");
+    var table = document.getElementById('txnTable');
+    for(var i = 2; i < table.rows.length;){
+      table.deleteRow(i);
+    }
+    toggleOverlay('block');
+
+    var fy = document.getElementById('txnFFY').value;
+    var fymonth = document.getElementById('txnFMonth').value;
+    var status =  document.getElementById('txnFStatus').value;
+
+    var orderParam = "fymstatus";
+    var orderVal = fy+'-'+fymonth+'-'+status;
+
+    if(fymonth == 0 && status != 0){
+      orderParam = "fystatus";
+      orderVal = fy+'-'+status;
+    }
+
+    if(fymonth != 0 && status == 0){
+      orderParam = "fymonth";
+      orderVal = fy+'-'+fymonth;
+    }
+
+    if(fymonth == 0 && status == 0){
+      orderParam = "fy";
+      orderVal = parseInt(fy);
+    }
+    
+    txn.orderByChild(orderParam).equalTo(orderVal).get().then((snapshot) => {
+      if (snapshot.exists()) {
+        snapshot.forEach((childSnapshot) => {
+          var key = childSnapshot.key;
+          var record = childSnapshot.val();
+          appendRowHTML(table, key, record);
+        });
+        toggleOverlay('none');
+      } else {
+        var cell = table.insertRow().insertCell(0);
+        cell.innerHTML = "No data available";
+        toggleOverlay('none');
+      }
+    }).catch((error) => {
+      var cell = table.insertRow().insertCell(0);
+      cell.innerHTML = "Error! " + error;
+      console.log(error);
+      toggleOverlay('none');
+    });    
+    
   }
 
 </script>
