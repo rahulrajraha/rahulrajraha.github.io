@@ -271,6 +271,12 @@
 				   <td style="width:25%" id="sbkg">0.00</td>
 			    </tr>
 				<tr>
+			       <td style="width:25%">OTHERS</td>
+				   <td style="width:25%" id="bother">0.00</td>
+				   <td style="width:25%">OTHERS</td>
+				   <td style="width:25%" id="sother">0.00</td>
+			    </tr>
+				<tr>
 			       <td style="width:25%">STT</td>
 				   <td style="width:25%" id="bstt">0.00</td>
 				   <td style="width:25%">STT</td>
@@ -283,12 +289,6 @@
 				   <td style="width:25%" id="stxn">0.00</td>
 			    </tr>
 				<tr>
-			       <td style="width:25%">GST</td>
-				   <td style="width:25%" id="bgst">0.00</td>
-				   <td style="width:25%">GST</td>
-				   <td style="width:25%" id="sgst">0.00</td>
-			    </tr>
-				<tr>
 			       <td style="width:25%">SEBI</td>
 				   <td style="width:25%" id="bsebi">0.00</td>
 				   <td style="width:25%">SEBI</td>
@@ -299,6 +299,24 @@
 				   <td style="width:25%" id="bstamp">0.00</td>
 				   <td style="width:25%">STAMP</td>
 				   <td style="width:25%" id="sstamp">0.00</td>
+			    </tr>
+				<tr>
+			       <td style="width:25%">GST</td>
+				   <td style="width:25%" id="bgst">0.00</td>
+				   <td style="width:25%">GST</td>
+				   <td style="width:25%" id="sgst">0.00</td>
+			    </tr>
+				<tr>
+			       <td style="width:25%">TOT</td>
+				   <td style="width:25%" id="btot">0.00</td>
+				   <td style="width:25%">TOT</td>
+				   <td style="width:25%" id="stot">0.00</td>
+			    </tr>
+				<tr>
+			       <td style="width:25%">DEBIT</td>
+				   <td style="width:25%" id="debit">0.00</td>
+				   <td style="width:25%">CREDIT</td>
+				   <td style="width:25%" id="credit">0.00</td>
 			    </tr>
 				<tr>
 			       <td style="width:25%">DEMAT</td>
@@ -331,6 +349,9 @@ function openTab(evt, tabName) {
    document.getElementById("bsebi").innerText = 0.00;
    document.getElementById("bstamp").innerText = 0.00;
    document.getElementById("bdemat").innerText = 0.00;
+   document.getElementById("bother").innerText = 0.00;
+   document.getElementById("debit").innerText = 0.00;
+   document.getElementById("btot").innerText = 0.00;
    document.getElementById("sbkg").innerText = 0.00;
    document.getElementById("sstt").innerText = 0.00;
    document.getElementById("stxn").innerText = 0.00;
@@ -338,22 +359,31 @@ function openTab(evt, tabName) {
    document.getElementById("ssebi").innerText = 0.00;
    document.getElementById("sstamp").innerText = 0.00;
    document.getElementById("sdemat").innerText = 0.00;
+   document.getElementById("sother").innerText = 0.00;
+   document.getElementById("stot").innerText = 0.00;
+   document.getElementById("credit").innerText = 0.00;
 }
 
 var charges = {
-                cb:{brk:.150, stt:.100, txn:.00345, sebi:.0001, stamp:.015, demat:00, gst:18}, 
-                cs:{brk:.150, stt:.100, txn:.00345, sebi:.0001, stamp:.000, demat:20, gst:18}, 
-                mb:{brk:.015, stt:.000, txn:.00345, sebi:.0001, stamp:.003, demat:00, gst:18}, 
-                ms:{brk:.015, stt:.025, txn:.00345, sebi:.0001, stamp:.000, demat:00, gst:18},
+                cb:{brk:.150, stt:.100, txn:.00325, sebi:.0001, stamp:.015, demat:00, gst:18}, 
+                cs:{brk:.150, stt:.100, txn:.00325, sebi:.0001, stamp:.000, demat:20, gst:18}, 
+                mb:{brk:.02, stt:.000, txn:.00325, sebi:.0001, stamp:.003, demat:00, gst:18}, 
+                ms:{brk:.02, stt:.025, txn:.00325, sebi:.0001, stamp:.000, demat:00, gst:18},
 			   sfb:{brk:.015, stt:.000, txn:.00200, sebi:.0001, stamp:.002, demat:00, gst:18}, 
-               sfs:{brk:.015, stt:.010, txn:.00200, sebi:.0001, stamp:.000, demat:00, gst:18}, 
+               sfs:{brk:.015, stt:.0125, txn:.00200, sebi:.0001, stamp:.000, demat:00, gst:18}, 
 			   cfb:{brk:20.0, stt:.000, txn:.00260, sebi:.0001, stamp:.002, demat:00, gst:18}, 
                cfs:{brk:20.0, stt:.010, txn:.00260, sebi:.0001, stamp:.000, demat:00, gst:18}, 
 			}
 
 function calcMBCBSFB(x, y){
+   document.getElementById("debit").innerText = 0.00;
+   document.getElementById("credit").innerText = 0.00;
    var cpA = document.getElementById(x+"Q").value*document.getElementById(x+"BP").value;
    var brkA = cpA*charges[x].brk/100;
+   if(x=='mb'){
+		if(parseFloat(cpA)<=100000)
+			brkA = 15.00;
+   }
    var brkgstA = brkA*charges[x].gst/100;
    var sttA = cpA*charges[x].stt/100;
    //var sttgstA = sttA*charges[x].gst/100;
@@ -372,16 +402,25 @@ function calcMBCBSFB(x, y){
    var be = betotal/document.getElementById(x+"Q").value;
    document.getElementById(x+"BE").value = parseFloat(be.toFixed(2));
    document.getElementById(x+"INV").value = parseFloat(cptotalA.toFixed(2));
-   document.getElementById("bbkg").innerText = brkA.toFixed(2) + '|' + brkgstA.toFixed(2);
-   document.getElementById("bstt").innerText = sttA.toFixed(2) + '|' + sttgstA.toFixed(2);
-   document.getElementById("btxn").innerText = txnA.toFixed(2) + '|' + txngstA.toFixed(2);
-   document.getElementById("bgst").innerText = gstA.toFixed(2);
-   document.getElementById("bsebi").innerText = sebiA.toFixed(2);
-   document.getElementById("bstamp").innerText = stampA.toFixed(2);
+   //document.getElementById("bbkg").innerText = brkA.toFixed(5) + '|' + brkgstA.toFixed(5);
+   //document.getElementById("bstt").innerText = sttA.toFixed(5) + '|' + sttgstA.toFixed(5);
+   //document.getElementById("btxn").innerText = txnA.toFixed(5) + '|' + txngstA.toFixed(5);
+   document.getElementById("bbkg").innerText = brkA.toFixed(5);
+   document.getElementById("bstt").innerText = sttA.toFixed(5);
+   document.getElementById("btxn").innerText = txnA.toFixed(5);
+   document.getElementById("bgst").innerText = gstA.toFixed(5);
+   document.getElementById("bsebi").innerText = sebiA.toFixed(5);
+   document.getElementById("bstamp").innerText = stampA.toFixed(5);
    document.getElementById("bdemat").innerText = dematA.toFixed(2) + '|' + dematgstA.toFixed(2);
+   document.getElementById("bother").innerText = (parseFloat(sttA.toFixed(5)) + parseFloat(txnA.toFixed(5)) + parseFloat(sebiA.toFixed(5)) + parseFloat(gstA.toFixed(5)) + parseFloat(stampA.toFixed(5))).toFixed(5);
+   document.getElementById("btot").innerText = (parseFloat(brkA.toFixed(5)) + parseFloat(sttA.toFixed(5)) + parseFloat(txnA.toFixed(5)) + parseFloat(sebiA.toFixed(5)) + parseFloat(gstA.toFixed(5)) + parseFloat(stampA.toFixed(5))).toFixed(2);
    
    var cpB = document.getElementById(x+"Q").value*document.getElementById(x+"SP").value;
    var brkB = cpB*charges[y].brk/100;
+   if(x=='mb'){
+		if(parseFloat(cpB)<=100000)
+			brkB = 15.00;
+   }
    var brkgstB = brkB*charges[y].gst/100;
    var sttB = cpB*charges[y].stt/100;
    //var sttgstB = sttB*charges[y].gst/100;
@@ -394,31 +433,68 @@ function calcMBCBSFB(x, y){
    var dematB = charges[y].demat;
    var dematgstB = dematB*charges[y].gst/100;
    var cptotalB = cpB - brkB - brkgstB - sttB - sttgstB - txnB - txngstB - sebiB - stampB - dematB - dematgstB;
-   document.getElementById("sbkg").innerText = brkB.toFixed(2) + '|' + brkgstB.toFixed(2);
-   document.getElementById("sstt").innerText = sttB.toFixed(2) + '|' + sttgstB.toFixed(2);
-   document.getElementById("stxn").innerText = txnB.toFixed(2) + '|' + txngstB.toFixed(2);
-   document.getElementById("sgst").innerText = gstB.toFixed(2);
-   document.getElementById("ssebi").innerText = sebiB.toFixed(2);
-   document.getElementById("sstamp").innerText = stampB.toFixed(2);
+   //document.getElementById("sbkg").innerText = brkB.toFixed(5) + '|' + brkgstB.toFixed(5);
+   //document.getElementById("sstt").innerText = sttB.toFixed(5) + '|' + sttgstB.toFixed(5);
+   //document.getElementById("stxn").innerText = txnB.toFixed(5) + '|' + txngstB.toFixed(5);
+   document.getElementById("sbkg").innerText = brkB.toFixed(5);
+   document.getElementById("sstt").innerText = sttB.toFixed(5);
+   document.getElementById("stxn").innerText = txnB.toFixed(5);
+   document.getElementById("sgst").innerText = gstB.toFixed(5);
+   document.getElementById("ssebi").innerText = sebiB.toFixed(5);
+   document.getElementById("sstamp").innerText = stampB.toFixed(5);
    document.getElementById("sdemat").innerText = dematB.toFixed(2) + '|' + dematgstB.toFixed(2);
+   document.getElementById("sother").innerText = (parseFloat(sttB.toFixed(5)) + parseFloat(txnB.toFixed(5)) + parseFloat(sebiB.toFixed(5)) + parseFloat(gstB.toFixed(5)) + parseFloat(stampB.toFixed(5))).toFixed(5);
+   document.getElementById("stot").innerText = (parseFloat(brkB.toFixed(5)) + parseFloat(sttB.toFixed(5)) + parseFloat(txnB.toFixed(5)) + parseFloat(sebiB.toFixed(5)) + parseFloat(gstB.toFixed(5)) + parseFloat(stampB.toFixed(5))).toFixed(2);
    
-   document.getElementById(x+"PL").value = (parseFloat(cptotalB.toFixed(2)) - parseFloat(cptotalA.toFixed(2))).toFixed(2);   
+   
+   document.getElementById(x+"PL").value = (parseFloat(cptotalB.toFixed(2)) - parseFloat(cptotalA.toFixed(5))).toFixed(2);  
+   
    
    if(x=='cb'){
-      document.getElementById(x+"TRN").value = cpB.toFixed(2);
-	  document.getElementById(x+"ROR").value = (document.getElementById(x+"PL").value*100/document.getElementById(x+"TRN").value).toFixed(2);
+      document.getElementById(x+"TRN").value = cpB.toFixed(5);
+	  document.getElementById(x+"ROR").value = (document.getElementById(x+"PL").value*100/document.getElementById(x+"TRN").value).toFixed(5);
+	  
+	  document.getElementById("debit").innerText = (parseFloat(cpA.toFixed(5)) + parseFloat(brkA.toFixed(5)) + parseFloat(sttA.toFixed(5)) + parseFloat(txnA.toFixed(5)) + parseFloat(sebiA.toFixed(5)) + parseFloat(gstA.toFixed(5)) + parseFloat(stampA.toFixed(5))).toFixed(2);
+	  
+	  document.getElementById("credit").innerText = (parseFloat(cpB.toFixed(5)) - (parseFloat(brkB.toFixed(5)) + parseFloat(sttB.toFixed(5)) + parseFloat(txnB.toFixed(5)) + parseFloat(sebiB.toFixed(5)) + parseFloat(gstB.toFixed(5)) + parseFloat(stampB.toFixed(5)))).toFixed(2);
    }
    
    if(x=='mb' || x=='sfb'){
-      document.getElementById(x+"TRN").value = (document.getElementById(x+"Q").value*(Math.abs(document.getElementById(x+"SP").value - document.getElementById(x+"BP").value))).toFixed(2);
-	  document.getElementById(x+"ROR").value = (document.getElementById(x+"PL").value*100/document.getElementById(x+"TRN").value).toFixed(2);
+      document.getElementById(x+"TRN").value = (document.getElementById(x+"Q").value*(Math.abs(document.getElementById(x+"SP").value - document.getElementById(x+"BP").value))).toFixed(5);
+	  document.getElementById(x+"ROR").value = (document.getElementById(x+"PL").value*100/document.getElementById(x+"TRN").value).toFixed(5);
+	  if(x=='mb'){
+		document.getElementById("msQ").value = "";
+		document.getElementById("msSP").value = "";
+		document.getElementById("msBE").value = "";
+		document.getElementById("msBP").value = "";
+		document.getElementById("msINV").value = "";
+		document.getElementById("msPL").value = "";
+		document.getElementById("msTRN").value = "";
+		document.getElementById("msROR").value = "";
+	  }
+	  if(x=='sfb'){
+	    document.getElementById("sfsQ").value = "";
+		document.getElementById("sfsSP").value = "";
+		document.getElementById("sfsBE").value = "";
+		document.getElementById("sfsBP").value = "";
+		document.getElementById("sfsINV").value = "";
+		document.getElementById("sfsPL").value = "";
+		document.getElementById("sfsTRN").value = "";
+		document.getElementById("sfsROR").value = "";
+	  }
    } 
    
 }
 
 function calcMSSFS(x, y){
+   document.getElementById("debit").innerText = 0.00;
+   document.getElementById("credit").innerText = 0.00;
    var cpA = document.getElementById(x+"Q").value*document.getElementById(x+"SP").value;
    var brkA = cpA*charges[x].brk/100;
+   if(x=='ms'){
+		if(parseFloat(cpA)<=100000)
+			brkA = 15.00;
+   }
    var brkgstA = brkA*charges[x].gst/100;
    var sttA = cpA*charges[x].stt/100;
    //var sttgstA = sttA*charges[x].gst/100;
@@ -436,18 +512,28 @@ function calcMSSFS(x, y){
    var dematgstB = dematB*charges[y].gst/100;
    var betotal = ((cptotalA - dematB - dematgstB)*100)/(100 + charges[y].brk + charges[y].stt + charges[y].txn + charges[y].gst*(charges[y].brk + charges[y].txn)/100 + charges[y].sebi + charges[y].stamp);
    var be = betotal/document.getElementById(x+"Q").value;
-   document.getElementById(x+"BE").value = parseFloat(be.toFixed(2));
-   document.getElementById(x+"INV").value = parseFloat(betotal.toFixed(2));
-   document.getElementById("sbkg").innerText = brkA.toFixed(2) + '|' + brkgstA.toFixed(2);
-   document.getElementById("sstt").innerText = sttA.toFixed(2) + '|' + sttgstA.toFixed(2);
-   document.getElementById("stxn").innerText = txnA.toFixed(2) + '|' + txngstA.toFixed(2);
-   document.getElementById("sgst").innerText = gstA.toFixed(2);
-   document.getElementById("ssebi").innerText = sebiA.toFixed(2);
-   document.getElementById("sstamp").innerText = stampA.toFixed(2);
+   document.getElementById(x+"BE").value = parseFloat(be.toFixed(5));
+   document.getElementById(x+"INV").value = parseFloat(betotal.toFixed(5));
+   //document.getElementById("sbkg").innerText = brkA.toFixed(5) + '|' + brkgstA.toFixed(5);
+   //document.getElementById("sstt").innerText = sttA.toFixed(5) + '|' + sttgstA.toFixed(5);
+   //document.getElementById("stxn").innerText = txnA.toFixed(5) + '|' + txngstA.toFixed(5);
+   document.getElementById("sbkg").innerText = brkA.toFixed(5);
+   document.getElementById("sstt").innerText = sttA.toFixed(5);
+   document.getElementById("stxn").innerText = txnA.toFixed(5);
+   document.getElementById("sgst").innerText = gstA.toFixed(5);
+   document.getElementById("ssebi").innerText = sebiA.toFixed(5);
+   document.getElementById("sstamp").innerText = stampA.toFixed(5);
    document.getElementById("sdemat").innerText = dematA.toFixed(2) + '|' + dematgstA.toFixed(2);
+   document.getElementById("sother").innerText = (parseFloat(sttA.toFixed(5)) + parseFloat(txnA.toFixed(5)) + parseFloat(sebiA.toFixed(5)) + parseFloat(gstA.toFixed(5)) + parseFloat(stampA.toFixed(5))).toFixed(5);
+   document.getElementById("stot").innerText = (parseFloat(brkA.toFixed(5)) + parseFloat(sttA.toFixed(5)) + parseFloat(txnA.toFixed(5)) + parseFloat(sebiA.toFixed(5)) + parseFloat(gstA.toFixed(5)) + parseFloat(stampA.toFixed(5))).toFixed(2);
+   
    
    var cpB = document.getElementById(x+"Q").value*document.getElementById(x+"BP").value;
    var brkB = cpB*charges[y].brk/100;
+   if(x=='ms'){
+		if(parseFloat(cpB)<=100000)
+			brkB = 15.00;
+   }
    var brkgstB = brkB*charges[y].gst/100;
    var sttB = cpB*charges[y].stt/100;
    //var sttgstB = sttB*charges[y].gst/100;
@@ -460,17 +546,43 @@ function calcMSSFS(x, y){
    var dematB = charges[y].demat;
    var dematgstB = dematB*charges[y].gst/100;
    var cptotalB = cpB + brkB + brkgstB + sttB + sttgstB + txnB + txngstB + sebiB + stampB + dematB + dematgstB;
-   document.getElementById("bbkg").innerText = brkB.toFixed(2) + '|' + brkgstB.toFixed(2);
-   document.getElementById("bstt").innerText = sttB.toFixed(2) + '|' + sttgstB.toFixed(2);
-   document.getElementById("btxn").innerText = txnB.toFixed(2) + '|' + txngstB.toFixed(2);
-   document.getElementById("bgst").innerText = gstB.toFixed(2);
-   document.getElementById("bsebi").innerText = sebiB.toFixed(2);
-   document.getElementById("bstamp").innerText = stampB.toFixed(2);
+   //document.getElementById("bbkg").innerText = brkB.toFixed(5) + '|' + brkgstB.toFixed(5);
+   //document.getElementById("bstt").innerText = sttB.toFixed(5) + '|' + sttgstB.toFixed(5);
+   //document.getElementById("btxn").innerText = txnB.toFixed(5) + '|' + txngstB.toFixed(5);
+   document.getElementById("bbkg").innerText = brkB.toFixed(5);
+   document.getElementById("bstt").innerText = sttB.toFixed(5);
+   document.getElementById("btxn").innerText = txnB.toFixed(5);
+   document.getElementById("bgst").innerText = gstB.toFixed(5);
+   document.getElementById("bsebi").innerText = sebiB.toFixed(5);
+   document.getElementById("bstamp").innerText = stampB.toFixed(5);
    document.getElementById("bdemat").innerText = dematB.toFixed(2) + '|' + dematgstB.toFixed(2);
+   document.getElementById("bother").innerText = (parseFloat(sttB.toFixed(5)) + parseFloat(txnB.toFixed(5)) + parseFloat(sebiB.toFixed(5)) + parseFloat(gstB.toFixed(5)) + parseFloat(stampB.toFixed(5))).toFixed(5);
+   document.getElementById("btot").innerText = (parseFloat(brkB.toFixed(5)) + parseFloat(sttB.toFixed(5)) + parseFloat(txnB.toFixed(5)) + parseFloat(sebiB.toFixed(5)) + parseFloat(gstB.toFixed(5)) + parseFloat(stampB.toFixed(5))).toFixed(2);
    
-   document.getElementById(x+"PL").value = (parseFloat(cptotalA.toFixed(2)) - parseFloat(cptotalB.toFixed(2))).toFixed(2);  
-   document.getElementById(x+"TRN").value = (document.getElementById(x+"Q").value*(Math.abs(document.getElementById(x+"SP").value - document.getElementById(x+"BP").value))).toFixed(2);
-   document.getElementById(x+"ROR").value = (document.getElementById(x+"PL").value*100/document.getElementById(x+"TRN").value).toFixed(2);   
+   document.getElementById(x+"PL").value = (parseFloat(cptotalA.toFixed(5)) - parseFloat(cptotalB.toFixed(5))).toFixed(2);  
+   document.getElementById(x+"TRN").value = (document.getElementById(x+"Q").value*(Math.abs(document.getElementById(x+"SP").value - document.getElementById(x+"BP").value))).toFixed(5);
+   document.getElementById(x+"ROR").value = (document.getElementById(x+"PL").value*100/document.getElementById(x+"TRN").value).toFixed(5);   
+   
+   if(x=='ms'){
+		document.getElementById("mbQ").value = "";
+		document.getElementById("mbSP").value = "";
+		document.getElementById("mbBE").value = "";
+		document.getElementById("mbBP").value = "";
+		document.getElementById("mbINV").value = "";
+		document.getElementById("mbPL").value = "";
+		document.getElementById("mbTRN").value = "";
+		document.getElementById("mbROR").value = "";
+	}
+	if(x=='sfs'){
+	    document.getElementById("sfbQ").value = "";
+		document.getElementById("sfbSP").value = "";
+		document.getElementById("sfbBE").value = "";
+		document.getElementById("sfbBP").value = "";
+		document.getElementById("sfbINV").value = "";
+		document.getElementById("sfbPL").value = "";
+		document.getElementById("sfbTRN").value = "";
+		document.getElementById("sfbROR").value = "";
+	 }
 }
 
 function calcCFB(x, y){
@@ -492,15 +604,15 @@ function calcCFB(x, y){
    var dematgstB = dematB*charges[y].gst/100;   
    var betotal = ((cptotalA + dematB + dematgstB + charges[y].sebi*cpA/100 + charges[y].stamp*cpA/100 + charges[y].brk*(1+charges[y].gst/100))/((10000 - charges[y].stt*100 - charges[y].txn*100 - charges[y].gst*charges[y].txn)/10000));
    var be = betotal/document.getElementById(x+"Q").value;
-   document.getElementById(x+"BE").value = parseFloat(be.toFixed(2));
-   document.getElementById(x+"INV").value = parseFloat(cptotalA.toFixed(2));
-   document.getElementById("bbkg").innerText = brkA.toFixed(2) + '|' + brkgstA.toFixed(2);
-   document.getElementById("bstt").innerText = sttA.toFixed(2) + '|' + sttgstA.toFixed(2);
-   document.getElementById("btxn").innerText = txnA.toFixed(2) + '|' + txngstA.toFixed(2);
-   document.getElementById("bgst").innerText = gstA.toFixed(2);
-   document.getElementById("bsebi").innerText = sebiA.toFixed(2);
-   document.getElementById("bstamp").innerText = stampA.toFixed(2);
-   document.getElementById("bdemat").innerText = dematA.toFixed(2) + '|' + dematgstA.toFixed(2);
+   document.getElementById(x+"BE").value = parseFloat(be.toFixed(5));
+   document.getElementById(x+"INV").value = parseFloat(cptotalA.toFixed(5));
+   document.getElementById("bbkg").innerText = brkA.toFixed(5) + '|' + brkgstA.toFixed(5);
+   document.getElementById("bstt").innerText = sttA.toFixed(5) + '|' + sttgstA.toFixed(5);
+   document.getElementById("btxn").innerText = txnA.toFixed(5) + '|' + txngstA.toFixed(5);
+   document.getElementById("bgst").innerText = gstA.toFixed(5);
+   document.getElementById("bsebi").innerText = sebiA.toFixed(5);
+   document.getElementById("bstamp").innerText = stampA.toFixed(5);
+   document.getElementById("bdemat").innerText = dematA.toFixed(5) + '|' + dematgstA.toFixed(5);
 
    var cpB = document.getElementById(x+"Q").value*document.getElementById(x+"SP").value;
    var brkB = charges[y].brk;
@@ -516,17 +628,17 @@ function calcCFB(x, y){
    var dematB = charges[y].demat;
    var dematgstB = dematB*charges[y].gst/100;
    var cptotalB = cpB - brkB - brkgstB - sttB - sttgstB - txnB - txngstB - sebiB - stampB - dematB - dematgstB;
-   document.getElementById("sbkg").innerText = brkB.toFixed(2) + '|' + brkgstB.toFixed(2);
-   document.getElementById("sstt").innerText = sttB.toFixed(2) + '|' + sttgstB.toFixed(2);
-   document.getElementById("stxn").innerText = txnB.toFixed(2) + '|' + txngstB.toFixed(2);
-   document.getElementById("sgst").innerText = gstB.toFixed(2);
-   document.getElementById("ssebi").innerText = sebiB.toFixed(2);
-   document.getElementById("sstamp").innerText = stampB.toFixed(2);
-   document.getElementById("sdemat").innerText = dematB.toFixed(2) + '|' + dematgstB.toFixed(2);
+   document.getElementById("sbkg").innerText = brkB.toFixed(5) + '|' + brkgstB.toFixed(5);
+   document.getElementById("sstt").innerText = sttB.toFixed(5) + '|' + sttgstB.toFixed(5);
+   document.getElementById("stxn").innerText = txnB.toFixed(5) + '|' + txngstB.toFixed(5);
+   document.getElementById("sgst").innerText = gstB.toFixed(5);
+   document.getElementById("ssebi").innerText = sebiB.toFixed(5);
+   document.getElementById("sstamp").innerText = stampB.toFixed(5);
+   document.getElementById("sdemat").innerText = dematB.toFixed(5) + '|' + dematgstB.toFixed(5);
    
-   document.getElementById(x+"PL").value = (parseFloat(cptotalB.toFixed(2)) - parseFloat(cptotalA.toFixed(2))).toFixed(2); 
-   document.getElementById(x+"TRN").value = (document.getElementById(x+"Q").value*(Math.abs(document.getElementById(x+"SP").value - document.getElementById(x+"BP").value))).toFixed(2);
-   document.getElementById(x+"ROR").value = (document.getElementById(x+"PL").value*100/document.getElementById(x+"TRN").value).toFixed(2);
+   document.getElementById(x+"PL").value = (parseFloat(cptotalB.toFixed(5)) - parseFloat(cptotalA.toFixed(5))).toFixed(5); 
+   document.getElementById(x+"TRN").value = (document.getElementById(x+"Q").value*(Math.abs(document.getElementById(x+"SP").value - document.getElementById(x+"BP").value))).toFixed(5);
+   document.getElementById(x+"ROR").value = (document.getElementById(x+"PL").value*100/document.getElementById(x+"TRN").value).toFixed(5);
 }
 
 function calcCFS(x, y){
@@ -548,15 +660,15 @@ function calcCFS(x, y){
    var dematgstB = dematB*charges[y].gst/100;  
    var betotal = ((cptotalA - dematB - dematgstB - charges[y].sebi*cpA/100 - charges[y].stamp*cpA/100 - charges[y].brk*(1+charges[y].gst/100))/((10000 + charges[y].stt*100 + charges[y].txn*100 + charges[y].gst*charges[y].txn)/10000));
    var be = betotal/document.getElementById(x+"Q").value;
-   document.getElementById(x+"BE").value = parseFloat(be.toFixed(2));
-   document.getElementById(x+"INV").value = parseFloat(cptotalA.toFixed(2));
-   document.getElementById("sbkg").innerText = brkA.toFixed(2) + '|' + brkgstA.toFixed(2);
-   document.getElementById("sstt").innerText = sttA.toFixed(2) + '|' + sttgstA.toFixed(2);
-   document.getElementById("stxn").innerText = txnA.toFixed(2) + '|' + txngstA.toFixed(2);
-   document.getElementById("sgst").innerText = gstA.toFixed(2);
-   document.getElementById("ssebi").innerText = sebiA.toFixed(2);
-   document.getElementById("sstamp").innerText = stampA.toFixed(2);
-   document.getElementById("sdemat").innerText = dematA.toFixed(2) + '|' + dematgstA.toFixed(2);
+   document.getElementById(x+"BE").value = parseFloat(be.toFixed(5));
+   document.getElementById(x+"INV").value = parseFloat(cptotalA.toFixed(5));
+   document.getElementById("sbkg").innerText = brkA.toFixed(5) + '|' + brkgstA.toFixed(5);
+   document.getElementById("sstt").innerText = sttA.toFixed(5) + '|' + sttgstA.toFixed(5);
+   document.getElementById("stxn").innerText = txnA.toFixed(5) + '|' + txngstA.toFixed(5);
+   document.getElementById("sgst").innerText = gstA.toFixed(5);
+   document.getElementById("ssebi").innerText = sebiA.toFixed(5);
+   document.getElementById("sstamp").innerText = stampA.toFixed(5);
+   document.getElementById("sdemat").innerText = dematA.toFixed(5) + '|' + dematgstA.toFixed(5);
 
    var cpB = document.getElementById(x+"Q").value*document.getElementById(x+"BP").value;
    var brkB = charges[y].brk;
@@ -572,17 +684,17 @@ function calcCFS(x, y){
    var dematB = charges[y].demat;
    var dematgstB = dematB*charges[y].gst/100;
    var cptotalB = cpB + brkB + brkgstB + sttB + sttgstB + txnB + txngstB + sebiB + stampB + dematB + dematgstB;
-   document.getElementById("bbkg").innerText = brkB.toFixed(2) + '|' + brkgstB.toFixed(2);
-   document.getElementById("bstt").innerText = sttB.toFixed(2) + '|' + sttgstB.toFixed(2);
-   document.getElementById("btxn").innerText = txnB.toFixed(2) + '|' + txngstB.toFixed(2);
-   document.getElementById("bgst").innerText = gstB.toFixed(2);
-   document.getElementById("bsebi").innerText = sebiB.toFixed(2);
-   document.getElementById("bstamp").innerText = stampB.toFixed(2);
-   document.getElementById("bdemat").innerText = dematB.toFixed(2) + '|' + dematgstB.toFixed(2);
+   document.getElementById("bbkg").innerText = brkB.toFixed(5) + '|' + brkgstB.toFixed(5);
+   document.getElementById("bstt").innerText = sttB.toFixed(5) + '|' + sttgstB.toFixed(5);
+   document.getElementById("btxn").innerText = txnB.toFixed(5) + '|' + txngstB.toFixed(5);
+   document.getElementById("bgst").innerText = gstB.toFixed(5);
+   document.getElementById("bsebi").innerText = sebiB.toFixed(5);
+   document.getElementById("bstamp").innerText = stampB.toFixed(5);
+   document.getElementById("bdemat").innerText = dematB.toFixed(5) + '|' + dematgstB.toFixed(5);
    
-   document.getElementById(x+"PL").value = (parseFloat(cptotalA.toFixed(2)) - parseFloat(cptotalB.toFixed(2))).toFixed(2); 
-   document.getElementById(x+"TRN").value = (document.getElementById(x+"Q").value*(Math.abs(document.getElementById(x+"SP").value - document.getElementById(x+"BP").value))).toFixed(2);
-   document.getElementById(x+"ROR").value = (document.getElementById(x+"PL").value*100/document.getElementById(x+"TRN").value).toFixed(2);
+   document.getElementById(x+"PL").value = (parseFloat(cptotalA.toFixed(5)) - parseFloat(cptotalB.toFixed(5))).toFixed(5); 
+   document.getElementById(x+"TRN").value = (document.getElementById(x+"Q").value*(Math.abs(document.getElementById(x+"SP").value - document.getElementById(x+"BP").value))).toFixed(5);
+   document.getElementById(x+"ROR").value = (document.getElementById(x+"PL").value*100/document.getElementById(x+"TRN").value).toFixed(5);
 }
 
 document.getElementById('marginTab').click();
